@@ -1,0 +1,17 @@
+hostname REdge
+enable secret 123456@A 
+username admin secret 5 123456@A 
+ip domain-name demo.com
+username admin password 123456@A
+ip ssh version 2
+ssh authentication-retries 5
+ip ssh time-out 60
+crypto key generate rsa
+line vty 0 4
+login local
+transport input ssh 
+exit
+
+
+# username 123456@A privilege 15 password 123456@A
+123456@A

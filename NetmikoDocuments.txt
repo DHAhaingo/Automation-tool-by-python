@@ -1,0 +1,6 @@
+net_connect.send_command() - Gửi lệnh đến R/SW
+net_connect.send_config_set() - Gửi lệnh đến R/SW mode config
+net_connect.save_config() - lưu cấu hình
+net_connect.enable() - vào enable mode
+net_connect.find_prompt() - trả về tên host R/Sw
+net_connect.find_disconnect() - đóng kết nối.
