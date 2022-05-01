@@ -44,7 +44,7 @@ print(net_connect.find_prompt())
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
 def info_device():
-    net_connect= ConnectHandler(**info_dev)
+    net_connect = ConnectHandler(**info_dev)
     print("\t\n Information of device\n")
     print(net_connect.send_command('show arp'))
     print("\t\n Ports status\n")
@@ -67,7 +67,7 @@ def interface_config():
     net_connect = ConnectHandler(**info_dev)
     dict_int = {}
     while True:
-        end = input('Enter to continue or end to finish.\n')
+        end = input('Enter to continue or type End to finish.\n')
         if end != 'end':
             int = input("Interface:\t")
             ip_int = input("IP address + Subnet mask:\t")
@@ -78,8 +78,9 @@ def interface_config():
     for i in dict_int:
         int_ip = ["interface "+i,
                   "no shut", 
-                  "ip address "+ dict_int[i], "exit"]
-        print(net_connect.sen_config_set(int_ip))
+                  "ip address "+ dict_int[i], 
+                  "exit"]
+        print(net_connect.send_config_set(int_ip))
     print("\n\tDone!!!\n")
     print(net_connect.send_command("show ip int brief"))
 
@@ -98,34 +99,59 @@ def trunking_config():
         else: break
     net_connect.enable()
     for i in list_trunking:
-        trunking_config = ["Interface"+ i, 
+        trunking_configuration = ["Interface"+ i, 
                            "switchport trunk encapsulation dot1q",
-                           "switchport mode trung"]
+                           "switchport mode trunk"]
     print("\n\tDone!!!\n")
+    print(net_connect.send_config_set(trunking_configuration))
     print(net_connect.send_command("show int trunk"))
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#TVlan configuration
+#VLAN configuration
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
-def vlan_configuration():
+def vlan_config():
     net_connect = ConnectHandler(**info_dev)
-    dict_vlan = {}
-    list_int = [] 
+    dict_vlan = {} 
     while True:
         end = input("Enter to continue or end to finish.\n")
-        if end != "end":
+        if end != "end":    
             vlan = input("VLAN\t")
             vlan_name = input("VLAN name:\t")
-            print("\nEnter interface apply for VLAN - ex: e0/1, e0/2...\n")
-            vlan_int = ("Enter interface:\t")
             dict_vlan.setdefault(vlan, vlan_name)
-        else:break
+        else:
+            break
     net_connect.enable()
-    for i in dict_vlan:
+    for i in dict_vlan:         # set VLAN
         vlan_configuration =    ["vlan "+i, 
                                 "name "+dict_vlan[i],
                                 "exit"]
-    print(net_connect.send_config_set(trunking_config))
+
+    print(net_connect.send_config_set(vlan_configuration))
     print("\n\tDone!!!\n")
-    print(net_connect.send_command("show vlan"))            
+    print(net_connect.send_command("show vlan"))
+#----------------------------------------------------------------------------------------------------------------------------------------#
+#Access interface VLAN configuration
+#----------------------------------------------------------------------------------------------------------------------------------------# 
+def access_int_vlan_config():
+    net_connect = ConnectHandler(**info_dev)
+    dict_int_vlan_access = {}
+    while True:
+        end = input("Enter to continue or end to finish.\n")
+        if end != "end":
+            vlan = input("VLAN:\t")
+            print("\nEnter interface apply for VLAN - ex: e0/1, e0/2...\n")
+            int_vlan_access = input("Interface VLAN access:\t")
+            dict_int_vlan_access.setdefault(vlan, int_vlan_access)
+        else:
+            break
+        for j in dict_int_vlan_access:  # interface VLAN access
+            int_vlan_access_configuration = [   "int " + dict_int_vlan_access[j],
+                                                "switchport mode access",
+                                                "switch access vlan " + j,
+                                                "exit"
+                                            ]
+    net_connect.enable()
+    print(net_connect.send_config_set(int_vlan_access_configuration))
+    print("\n\tDone!!!\n")
+    print(net_connect.send_command("show vlan"))
