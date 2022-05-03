@@ -5,6 +5,8 @@ options = """   \n\nAdmin: Ngo Truong Hai\n
 3 - Cấu hình Trunking (SW)
 4 - Cấu hình VLAN (SW)
 5 - Cấu hình access VLAN (SW)
+6 - Cấu hình routing
+7 - Cấu hình Access list
 ...
 e - Exit
 """
@@ -26,6 +28,8 @@ while True:
                 config.vlan_config()
             case 5:
                 config.access_int_vlan_config()
+            case 6:
+                config.routing_config()
             #wildcard case
             case _:
                 print("Please Enter a Valid Number")

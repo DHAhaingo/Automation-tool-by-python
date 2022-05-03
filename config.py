@@ -7,7 +7,7 @@ import getpass
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#CHECK IP
+# CHECK IP
 #----------------------------------------------------------------------------------------------------------------------------------------#
 def checkIP(ip):
     octet= ip.split('.')    # split ip into 4 octet ex:192.168.1.1 => [192,168,1,1]
@@ -19,7 +19,7 @@ def checkIP(ip):
     else: return False
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#Enter infor of device
+# Enter infor of device
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
 ip_dev = input('enter ip of device: ')
@@ -40,7 +40,7 @@ net_connect = ConnectHandler(**info_dev)
 print(net_connect.find_prompt())
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#Information of device
+# Information of device
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
 def info_device():
@@ -60,14 +60,14 @@ def info_device():
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#Interface Configuration
+# Interface Configuration
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
 def interface_config():
     net_connect = ConnectHandler(**info_dev)
     dict_int = {}
     while True:
-        end = input('Enter to continue or type End to finish.\n')
+        end = input("Enter to continue or type 'end' to finish.\n")
         if end != 'end':
             int = input("Interface:\t")
             ip_int = input("IP address + Subnet mask:\t")
@@ -85,14 +85,14 @@ def interface_config():
     print(net_connect.send_command("show ip int brief"))
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#Trunking configuration
+# Trunking configuration
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
 def trunking_config():
     net_connect = ConnectHandler(**info_dev)
     list_trunking = []
     while True:
-        end = input("Enter to continue or end to finish.\n")
+        end = input("Enter to continue or type 'end' to finish.\n")
         if end != 'end':
             int_trunking = input("Interface:\t")
             list_trunking.append(int_trunking)
@@ -107,14 +107,14 @@ def trunking_config():
     print(net_connect.send_command("show int trunk"))
 
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#VLAN configuration
+# VLAN configuration
 #----------------------------------------------------------------------------------------------------------------------------------------#
 
 def vlan_config():
     net_connect = ConnectHandler(**info_dev)
     dict_vlan = {} 
     while True:
-        end = input("Enter to continue or end to finish.\n")
+        end = input("Enter to continue or type 'end' to finish.\n")
         if end != "end":    
             vlan = input("VLAN\t")
             vlan_name = input("VLAN name:\t")
@@ -124,20 +124,20 @@ def vlan_config():
     net_connect.enable()
     for i in dict_vlan:         # set VLAN
         vlan_configuration =    ["vlan "+i, 
-                                "name "+dict_vlan[i],
-                                "exit"]
+                                 "name "+dict_vlan[i],
+                                 "exit"]
 
     print(net_connect.send_config_set(vlan_configuration))
     print("\n\tDone!!!\n")
     print(net_connect.send_command("show vlan"))
 #----------------------------------------------------------------------------------------------------------------------------------------#
-#Access interface VLAN configuration
+# Access interface VLAN configuration
 #----------------------------------------------------------------------------------------------------------------------------------------# 
 def access_int_vlan_config():
     net_connect = ConnectHandler(**info_dev)
     dict_int_vlan_access = {}
     while True:
-        end = input("Enter to continue or end to finish.\n")
+        end = input("Enter to continue or type 'end' to finish.\n")
         if end != "end":
             vlan = input("VLAN:\t")
             print("\nEnter interface apply for VLAN - ex: e0/1, e0/2...\n")
@@ -155,3 +155,22 @@ def access_int_vlan_config():
     print(net_connect.send_config_set(int_vlan_access_configuration))
     print("\n\tDone!!!\n")
     print(net_connect.send_command("show vlan"))
+#----------------------------------------------------------------------------------------------------------------------------------------#
+# Routing configuration
+#----------------------------------------------------------------------------------------------------------------------------------------#
+def routing_config():
+    net_connect = ConnectHandler(**info_dev)
+    list_routing_configuration = []
+    while True:
+        end = input("Enter to continue or type 'end' to finish.\n")
+        if end != "end":
+            des_network = input("destination network:\t")
+            sub_mask = input("subnet mask:\t")
+            gateway = input("gateway:\t")
+            list_routing_configuration.append("ip route " + des_network + " " + sub_mask + " " + gateway)
+        else:
+            break
+    net_connect.enable()
+    print(net_connect.send_config_set(list_routing_configuration))
+    print("\n\tDone!!!\n")
+    print(net_connect.send_command("show ip route"))
