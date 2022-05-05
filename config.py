@@ -174,3 +174,40 @@ def routing_config():
     print(net_connect.send_config_set(list_routing_configuration))
     print("\n\tDone!!!\n")
     print(net_connect.send_command("show ip route"))
+#----------------------------------------------------------------------------------------------------------------------------------------#
+# ACL configuration
+#----------------------------------------------------------------------------------------------------------------------------------------#
+def ACL_config():
+    net_connect = ConnectHandler(**info_dev)
+    list_ACL_configuration = []
+    list_group_access = []
+    while True:
+        end = input("Enter to continue or type 'end' to finish.\n")
+        if end != "end":
+            access_list_number = input("access_list_number:\t")
+            command = input("permit/deny:\t")
+            protocol = input("ip/udp/tcp/...:\t")
+            print("\ninput source and source wildcard mask - ex: 192.168.1.0 0.0.0.255 or (any) \n")
+            source_wildcard = input("source and source wildcard:\t")
+            print("\ninput destination and destination wildcard mask - ex: 192.168.0.0 0.0.0.255 or (any) \n")
+            des_wildcard = input("source and source wildcard:\t")
+            port = input("port access: \t")
+            list_ACL_configuration.append("access-list " + access_list_number + " " + command + " " + protocol + " " + source_wildcard + " " + des_wildcard + " eq" + " " +port)
+        else:
+            break
+    while True:
+        end = input("Enter to continue or type 'end' to finish.\n")
+        if end != "end":
+            interface = input("Interface:\t")
+            group_access_number = input("group_access_number:\t")
+            direction = input("in/out: \t")
+        else:
+            break
+    net_connect.enable()
+    print(net_connect.send_config_set(list_ACL_configuration))
+    ACL_configuration = ["interface " + interface,
+                         "ip access-group " + group_access_number + " " + direction,
+                         "exit"]
+    print(net_connect.send_config_set(ACL_configuration))            
+    print("\n\tDone!!!\n")
+    print(net_connect.send_command("show access-lists"))

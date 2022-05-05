@@ -30,6 +30,8 @@ while True:
                 config.access_int_vlan_config()
             case 6:
                 config.routing_config()
+            case 7:
+                config.ACL_config()
             #wildcard case
             case _:
                 print("Please Enter a Valid Number")
